@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Prototipo web navegable de PetCare para gestión de servicios y reservas de mascotas.">
+  <title>PetCare | Servicios para mascotas</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <header id="site-header" class="site-header is-hidden">
+    <a href="#inicio" class="brand" data-route="inicio" aria-label="Ir al inicio de PetCare">
+      <span class="brand-mark" aria-hidden="true">🐾</span>
+      <span>PetCare</span>
+    </a>
+
+    <button id="menu-button" class="menu-button" type="button" aria-expanded="false" aria-controls="main-nav">
+      Menú
+    </button>
+
+    <nav id="main-nav" class="main-nav" aria-label="Navegación principal">
+      <a href="#inicio" data-route="inicio">Inicio</a>
+      <a href="#mascotas" data-route="mascotas">Mascotas</a>
+      <a href="#buscar" data-route="buscar">Buscar servicios</a>
+      <a href="#mis-reservas" data-route="mis-reservas">Mis reservas</a>
+      <a href="#perfil-prestador" data-route="perfil-prestador" data-provider-link>Perfil prestador</a>
+      <a href="#agenda" data-route="agenda" data-provider-link>Agenda</a>
+    </nav>
+
+    <div class="header-actions">
+      <span id="session-name" class="session-name">Laura</span>
+      <button id="logout-button" class="button button-outline button-small" type="button">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="login" class="view auth-view is-active" data-view>
+      <div class="auth-card">
+        <div class="auth-logo" aria-hidden="true">🐾</div>
+        <p class="eyebrow">Bienvenido a</p>
+        <h1>PetCare</h1>
+        <p class="muted">Encuentra y reserva servicios para tu mascota.</p>
+
+        <form id="login-form" class="form-stack" novalidate>
+          <label for="login-email">Correo electrónico</label>
+          <input id="login-email" name="email" type="email" autocomplete="email" placeholder="nombre@correo.com" required>
+
+          <label for="login-password">Contraseña</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres" minlength="6" required>
+
+          <button class="button button-primary button-block" type="submit">Iniciar sesión</button>
+        </form>
+
+        <p class="auth-switch">¿No tienes cuenta? <a href="#registro" data-route="registro">Regístrate</a></p>
+        <div class="demo-access">
+          <span>Acceso rápido para la demostración</span>
+          <div>
+            <button class="text-button" type="button" data-demo-role="cliente">Entrar como cliente</button>
+            <button class="text-button" type="button" data-demo-role="prestador">Entrar como prestador</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="registro" class="view auth-view" data-view>
+      <div class="auth-card auth-card-wide">
+        <a href="#login" class="back-link" data-route="login">← Volver al inicio de sesión</a>
+        <p class="eyebrow">Crea tu cuenta</p>
+        <h1>Registro en PetCare</h1>
+        <p class="muted">Completa tus datos para comenzar.</p>
+
+        <form id="register-form" class="form-grid" novalidate>
+          <div class="field field-full">
+            <label for="register-name">Nombre completo</label>
+            <input id="register-name" name="name" type="text" autocomplete="name" placeholder="Tu nombre" required>
+          </div>
+
+          <div class="field field-full">
+            <label for="register-email">Correo electrónico</label>
+            <input id="register-email" name="email" type="email" autocomplete="email" placeholder="nombre@correo.com" required>
+          </div>
+
+          <div class="field">
+            <label for="register-password">Contraseña</label>
+            <input id="register-password" name="password" type="password" minlength="6" placeholder="Mínimo 6 caracteres" required>
+          </div>
+
+          <div class="field">
+            <label for="register-password-confirm">Repetir contraseña</label>
+            <input id="register-password-confirm" name="passwordConfirm" type="password" minlength="6" placeholder="Repite la contraseña" required>
+          </div>
+
+          <div class="field field-full">
+            <label for="register-role">Tipo de usuario</label>
+            <select id="register-role" name="role" required>
+              <option value="cliente">Cliente</option>
+              <option value="prestador">Prestador de servicios</option>
+            </select>
+          </div>
+
+          <div class="field field-full">
+            <button class="button button-primary button-block" type="submit">Registrarse</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="inicio" class="view page-view" data-view>
+      <div class="page-container">
+        <div class="hero-panel">
+          <div>
+            <p class="eyebrow">Panel principal</p>
+            <h1 id="welcome-title">Hola, Laura</h1>
+            <p>Administra tus mascotas y reserva servicios de forma sencilla.</p>
+            <a href="#buscar" class="button button-accent" data-route="buscar">Buscar un servicio</a>
+          </div>
+          <div class="hero-pets" aria-hidden="true">🐕 🐈</div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span class="stat-icon" aria-hidden="true">🐾</span>
+            <div><strong id="pets-count">2</strong><span>Mascotas registradas</span></div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon" aria-hidden="true">📅</span>
+            <div><strong id="bookings-count">1</strong><span>Reservas activas</span></div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon" aria-hidden="true">⭐</span>
+            <div><strong>4.8</strong><span>Valoración promedio</span></div>
+          </article>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Acciones rápidas</p>
+            <h2>¿Qué deseas hacer?</h2>
+          </div>
+        </div>
+
+        <div class="quick-grid">
+          <a href="#mascotas" class="quick-card" data-route="mascotas">
+            <span aria-hidden="true">🐶</span><strong>Mis mascotas</strong><small>Consulta y registra mascotas</small>
+          </a>
+          <a href="#buscar" class="quick-card" data-route="buscar">
+            <span aria-hidden="true">🔎</span><strong>Buscar servicios</strong><small>Encuentra prestadores disponibles</small>
+          </a>
+          <a href="#mis-reservas" class="quick-card" data-route="mis-reservas">
+            <span aria-hidden="true">🗓️</span><strong>Mis reservas</strong><small>Revisa tus próximas citas</small>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="mascotas" class="view page-view" data-view>
+      <div class="page-container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Gestión de mascotas</p>
+            <h1>Mis mascotas</h1>
+            <p>Registra la información básica de tus mascotas.</p>
+          </div>
+          <button id="show-pet-form" class="button button-primary" type="button">+ Registrar mascota</button>
+        </div>
+
+        <div id="pet-form-panel" class="form-panel is-collapsed">
+          <h2>Registrar mascota</h2>
+          <form id="pet-form" class="form-grid" novalidate>
+            <div class="field">
+              <label for="pet-name">Nombre de la mascota</label>
+              <input id="pet-name" name="name" type="text" placeholder="Ej. Bruno" required>
+            </div>
+            <div class="field">
+              <label for="pet-type">Tipo de mascota</label>
+              <select id="pet-type" name="type" required>
+                <option value="Perro">Perro</option>
+                <option value="Gato">Gato</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="pet-breed">Raza</label>
+              <input id="pet-breed" name="breed" type="text" placeholder="Ej. Golden Retriever" required>
+            </div>
+            <div class="field">
+              <label for="pet-age">Edad</label>
+              <input id="pet-age" name="age" type="number" min="0" max="30" placeholder="3" required>
+            </div>
+            <div class="field field-full form-actions">
+              <button class="button button-primary" type="submit">Guardar mascota</button>
+              <button id="cancel-pet-form" class="button button-outline" type="button">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="pets-grid" class="cards-grid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="buscar" class="view page-view" data-view>
+      <div class="page-container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Servicios disponibles</p>
+            <h1>Buscar prestadores</h1>
+            <p>Selecciona una categoría y compara las opciones.</p>
+          </div>
+        </div>
+
+        <div class="search-panel">
+          <label for="service-filter">Tipo de servicio</label>
+          <select id="service-filter">
+            <option value="Todos">Todos los servicios</option>
+            <option value="Veterinaria">Veterinaria</option>
+            <option value="Peluquería">Peluquería</option>
+            <option value="Paseo">Paseo</option>
+            <option value="Guardería">Guardería</option>
+          </select>
+          <button id="search-button" class="button button-primary" type="button">Buscar</button>
+        </div>
+
+        <p id="search-summary" class="results-summary">4 prestadores encontrados</p>
+        <div id="providers-grid" class="provider-grid"></div>
+      </div>
+    </section>
+
+    <section id="detalle-prestador" class="view page-view" data-view>
+      <div class="page-container narrow-container">
+        <a href="#buscar" class="back-link" data-route="buscar">← Volver a los resultados</a>
+        <article class="provider-detail">
+          <div id="provider-detail-avatar" class="provider-avatar provider-avatar-large">CV</div>
+          <div class="provider-detail-main">
+            <div class="provider-title-row">
+              <div>
+                <p id="provider-detail-category" class="eyebrow">Veterinaria</p>
+                <h1 id="provider-detail-name">Centro Veterinario Huellas</h1>
+                <p id="provider-detail-rating" class="rating">★ 4.9 · 128 opiniones</p>
+              </div>
+              <button id="detail-book-button" class="button button-accent" type="button">Reservar servicio</button>
+            </div>
+
+            <p id="provider-detail-description">Atención veterinaria para perros y gatos con personal calificado y horarios flexibles.</p>
+
+            <div class="detail-columns">
+              <div>
+                <h2>Servicios y precios</h2>
+                <ul id="provider-detail-services" class="service-list"></ul>
+              </div>
+              <div>
+                <h2>Información</h2>
+                <ul class="info-list">
+                  <li><strong>Horario:</strong> Lunes a sábado, 8:00 a. m. - 6:00 p. m.</li>
+                  <li><strong>Ubicación:</strong> Zona centro</li>
+                  <li><strong>Disponibilidad:</strong> Esta semana</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="review-box">
+              <h2>Opinión reciente</h2>
+              <p>“La atención fue amable y la reserva se confirmó rápidamente.”</p>
+              <small>— Andrea, cliente de PetCare</small>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="reserva" class="view page-view" data-view>
+      <div class="page-container narrow-container">
+        <a href="#detalle-prestador" class="back-link" data-route="detalle-prestador">← Volver al prestador</a>
+        <div class="booking-layout">
+          <div class="booking-summary">
+            <p class="eyebrow">Tu selección</p>
+            <h2 id="booking-provider-name">Centro Veterinario Huellas</h2>
+            <p id="booking-provider-category">Veterinaria</p>
+            <div class="summary-line"><span>Valoración</span><strong id="booking-provider-rating">★ 4.9</strong></div>
+            <div class="summary-line"><span>Confirmación</span><strong>Inmediata</strong></div>
+          </div>
+
+          <div class="form-panel booking-form-panel">
+            <p class="eyebrow">Paso final</p>
+            <h1>Reservar servicio</h1>
+            <form id="booking-form" class="form-stack" novalidate>
+              <label for="booking-pet">Mascota</label>
+              <select id="booking-pet" name="pet" required></select>
+
+              <label for="booking-service">Tipo de servicio</label>
+              <select id="booking-service" name="service" required></select>
+
+              <div class="form-grid compact-grid">
+                <div class="field">
+                  <label for="booking-date">Fecha</label>
+                  <input id="booking-date" name="date" type="date" required>
+                </div>
+                <div class="field">
+                  <label for="booking-time">Hora</label>
+                  <select id="booking-time" name="time" required>
+                    <option value="">Selecciona una hora</option>
+                    <option>08:00</option>
+                    <option>09:30</option>
+                    <option>11:00</option>
+                    <option>14:00</option>
+                    <option>16:30</option>
+                  </select>
+                </div>
+              </div>
+
+              <button class="button button-primary button-block" type="submit">Confirmar reserva</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="confirmacion" class="view page-view" data-view>
+      <div class="page-container confirmation-container">
+        <div class="confirmation-card">
+          <div class="confirmation-icon" aria-hidden="true">✓</div>
+          <p class="eyebrow">Reserva registrada</p>
+          <h1>¡Tu reserva está confirmada!</h1>
+          <p>Guardamos la cita correctamente. Puedes consultarla en “Mis reservas”.</p>
+          <dl id="confirmation-details" class="confirmation-details"></dl>
+          <div class="confirmation-actions">
+            <a href="#mis-reservas" class="button button-primary" data-route="mis-reservas">Ver mis reservas</a>
+            <a href="#inicio" class="button button-outline" data-route="inicio">Volver al inicio</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mis-reservas" class="view page-view" data-view>
+      <div class="page-container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Historial de citas</p>
+            <h1>Mis reservas</h1>
+            <p>Consulta el estado de tus servicios programados.</p>
+          </div>
+          <a href="#buscar" class="button button-primary" data-route="buscar">Nueva reserva</a>
+        </div>
+        <div id="bookings-list" class="bookings-list" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="perfil-prestador" class="view page-view" data-view>
+      <div class="page-container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Cuenta de prestador</p>
+            <h1>Perfil del prestador</h1>
+            <p>Actualiza los datos que verán los clientes.</p>
+          </div>
+          <a href="#agenda" class="button button-outline" data-route="agenda">Ver agenda</a>
+        </div>
+
+        <div class="provider-profile-layout">
+          <form id="provider-profile-form" class="form-panel form-grid" novalidate>
+            <div class="field field-full">
+              <label for="profile-business">Nombre del negocio</label>
+              <input id="profile-business" name="business" type="text" value="Centro Veterinario Huellas" required>
+            </div>
+            <div class="field">
+              <label for="profile-category">Categoría</label>
+              <select id="profile-category" name="category">
+                <option>Veterinaria</option>
+                <option>Peluquería</option>
+                <option>Paseo</option>
+                <option>Guardería</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="profile-phone">Teléfono</label>
+              <input id="profile-phone" name="phone" type="tel" value="300 000 0000" required>
+            </div>
+            <div class="field field-full">
+              <label for="profile-description">Descripción</label>
+              <textarea id="profile-description" name="description" rows="4" required>Atención veterinaria para perros y gatos con personal calificado.</textarea>
+            </div>
+            <div class="field field-full">
+              <button class="button button-primary" type="submit">Guardar cambios</button>
+            </div>
+          </form>
+
+          <aside class="services-panel">
+            <h2>Servicios publicados</h2>
+            <div class="service-edit-row"><span>Consulta general</span><strong>$45.000</strong></div>
+            <div class="service-edit-row"><span>Vacunación</span><strong>$60.000</strong></div>
+            <div class="service-edit-row"><span>Control</span><strong>$35.000</strong></div>
+            <button id="add-service-button" class="button button-outline button-block" type="button">+ Agregar servicio</button>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="agenda" class="view page-view" data-view>
+      <div class="page-container">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Panel del prestador</p>
+            <h1>Agenda de reservas</h1>
+            <p>Organiza las solicitudes recibidas de los clientes.</p>
+          </div>
+          <input id="agenda-date" class="date-filter" type="date" aria-label="Filtrar agenda por fecha">
+        </div>
+
+        <div class="agenda-summary">
+          <div><strong id="agenda-total">3</strong><span>Reservas</span></div>
+          <div><strong>2</strong><span>Confirmadas</span></div>
+          <div><strong>1</strong><span>Pendiente</span></div>
+        </div>
+
+        <div id="agenda-list" class="agenda-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="alert-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="alert-title" aria-describedby="alert-message" hidden>
+    <div class="sweet-alert">
+      <div id="alert-icon" class="sweet-icon" aria-hidden="true">✓</div>
+      <h2 id="alert-title">¡Reserva confirmada!</h2>
+      <p id="alert-message">La reserva se registró correctamente.</p>
+      <div class="modal-actions">
+        <button id="alert-secondary" class="button button-outline" type="button" hidden>Cancelar</button>
+        <button id="alert-primary" class="button button-primary" type="button">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <footer id="site-footer" class="site-footer is-hidden">
+    <p>PetCare · Prototipo académico de Análisis y Diseño de Sistemas</p>
+  </footer>
+
+  <script src="app.js?v=2"></script>
+</body>
+</html>
